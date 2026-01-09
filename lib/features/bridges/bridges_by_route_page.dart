@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../core/database/route_repository.dart';
 import '../../core/database/bridges_repository.dart';
 import '../../core/widgets/app_svg_icon.dart';
@@ -154,10 +155,13 @@ class _BridgesByRoutePageState extends State<BridgesByRoutePage> {
 																itemBuilder: (context, index) {
 																	final b = bridges[index];
 																	return ListTile(
-																		leading: const Icon(Icons.account_tree),
+																		leading: AppSvgIcon(asset: 'assets/icons/bridge.svg', size: 24),
 																		title: Text(
 																			'${b['BridgeNo']} - ${b['BridgeName']}',
 																		),
+																		onTap: () {
+																			context.push('/bridge/${b['BridgeId']}');
+																		},
 																	);
 																},
 															),

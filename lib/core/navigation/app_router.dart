@@ -4,8 +4,10 @@ import '../../features/bridges/bridges_page.dart';
 import '../../features/culverts/culverts_page.dart';
 import '../../features/bridges/bridges_by_location_page.dart';
 import '../../features/bridges/bridges_by_route_page.dart';
+import '../../features/bridges/bridge_detail_page.dart';
 import '../../features/culverts/culverts_by_location_page.dart';
 import '../../features/culverts/culverts_by_route_page.dart';
+import '../../features/culverts/culvert_detail_page.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/',
@@ -44,5 +46,21 @@ final appRouter = GoRouter(
       path: '/culvertsbyroute',
       builder: (context, state) => const CulvertsByRoutePage(),
     ),
+		
+		GoRoute(
+			path: '/bridge/:id',
+			builder: (context, state) {
+				final bridgeId = state.pathParameters['id']!;
+				return BridgeDetailPage(bridgeId: bridgeId);
+			},
+		),
+
+		GoRoute(
+			path: '/culvert/:id',
+			builder: (context, state) {
+				final culvertId = state.pathParameters['id']!;
+				return CulvertDetailPage(culvertId: culvertId);
+			},
+		),
   ],
 );

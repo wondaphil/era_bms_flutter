@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../core/database/route_repository.dart';
 import '../../core/database/culverts_repository.dart';
 import '../../core/widgets/app_svg_icon.dart';
@@ -154,10 +155,13 @@ class _CulvertsByRoutePageState extends State<CulvertsByRoutePage> {
 																itemBuilder: (context, index) {
 																	final b = culverts[index];
 																	return ListTile(
-																		leading: const Icon(Icons.account_tree),
+																		leading: AppSvgIcon(asset: 'assets/icons/culvert.svg', size: 24),
 																		title: Text(
 																			'${b['CulvertNo']}',
 																		),
+																		onTap: () {
+																			context.push('/culvert/${b['CulvertId']}');
+																		},
 																	);
 																},
 															),
