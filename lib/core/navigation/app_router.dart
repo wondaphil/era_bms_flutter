@@ -18,6 +18,8 @@ import '../../features/reports/inspection_reports_page.dart';
 import '../../features/charts/charts_page.dart';
 import '../../features/charts/inventory_charts_page.dart';
 import '../../features/charts/inspection_charts_page.dart';
+import '../../features/maps/bridge_map_page.dart';
+import '../../features/maps/bridge_map_by_segment_page.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/',
@@ -127,6 +129,22 @@ final appRouter = GoRouter(
 		GoRoute(
 			path: '/charts/inspection',
 			builder: (context, state) => const InspectionChartsPage(),
+		),
+		
+		GoRoute(
+			path: '/bridge/map/:id',
+			builder: (context, state) {
+				final bridgeId = state.pathParameters['id']!;
+				return BridgeMapPage(bridgeId: bridgeId);
+			},
+		),
+
+		GoRoute(
+			path: '/segment/map/:segmentId',
+			builder: (context, state) {
+				final segmentId = state.pathParameters['segmentId']!;
+				return BridgeMapBySegmentPage(segmentId: segmentId);
+			},
 		),
   ],
 );

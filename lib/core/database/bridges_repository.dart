@@ -38,21 +38,30 @@ class BridgesRepository {
 				b.BridgeName,
 
 				d.DistrictId,
+				d.DistrictNo,
 				d.DistrictName,
 
 				s.SectionId,
+				s.SectionNo,
 				s.SectionName,
 
 				sg.SegmentId,
+				sg.SegmentNo,
 				sg.SegmentName,
 
 				mr.MainRouteId,
+				mr.MainRouteNo,
 				mr.MainRouteName,
 
 				sr.SubRouteId,
-				sr.SubRouteName
+				sr.SubRouteNo,
+				sr.SubRouteName,
+				
+				gen.KMFromAddis
 
 			FROM Bridge b
+			LEFT JOIN BridgeGeneralInfo gen ON gen.BridgeId = b.BridgeId
+			
 			LEFT JOIN Segment sg ON b.SegmentId = sg.SegmentId
 			LEFT JOIN Section s ON sg.SectionId = s.SectionId
 			LEFT JOIN District d ON s.DistrictId = d.DistrictId
@@ -152,5 +161,45 @@ class BridgesRepository {
 		if (result.isEmpty) return null;
 
 		return result.first['BridgeNo'] as String;
+	}
+	
+	Future<Map<String, dynamic>?> getBridgeCoordinates(String bridgeId) async {
+		final db = await _dbHelper.database;
+
+		final result = await db.rawQuery('''
+			SELECT 
+				g.XCoord,
+				g.YCoord,
+				z.UtmZone
+			FROM BridgeGeneralInfo g
+			JOIN UTMZoneEthiopia z ON g.UtmZoneId = z.UtmZoneId
+			WHERE g.BridgeId = ?
+			LIMIT 1
+		''', [bridgeId]);
+
+		return result.isNotEmpty ? result.first : null;
+	}
+	
+	Future<List<Map<String, dynamic>>> getBridgesInfoBySegment(String segmentId) async {
+		final db = await _dbHelper.database;
+
+		return db.rawQuery('''
+			SELECT 
+				b.BridgeId,
+				b.BridgeNo,
+				b.BridgeName,
+				s.SegmentNo,
+				s.SegmentName,
+				g.XCoord,
+				g.YCoord,
+				z.UtmZone
+			FROM Bridge b
+			JOIN BridgeGeneralInfo g ON b.BridgeId = g.BridgeId
+			JOIN Segment s ON s.SegmentId = b.SegmentId
+			JOIN UTMZoneEthiopia z ON g.UtmZoneId = z.UtmZoneId
+			WHERE b.SegmentId = ?
+				AND g.XCoord IS NOT NULL
+				AND g.YCoord IS NOT NULL
+		''', [segmentId]);
 	}
 }
