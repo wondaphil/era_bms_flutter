@@ -41,7 +41,7 @@ class AppDrawer extends StatelessWidget {
 
           const Divider(),
 					_item(context, Icon(Icons.description), 'Reports', '/reports'),
-          _item(context, Icon(Icons.bar_chart), 'Graphs', '/graphs'),
+          _item(context, Icon(Icons.bar_chart), 'Charts', '/charts'),
           _item(context, Icon(Icons.map), 'Maps', '/maps'),
 
           const Divider(),

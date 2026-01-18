@@ -1,6 +1,6 @@
 import 'database_helper.dart';
 
-class RouteRepository {
+class RoutesRepository {
   final _dbHelper = DatabaseHelper.instance;
 
   Future<List<Map<String, dynamic>>> getMainRoutes() async {

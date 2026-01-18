@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../core/database/route_repository.dart';
+import '../../core/database/routes_repository.dart';
 import '../../core/database/bridges_repository.dart';
 import '../../core/widgets/app_svg_icon.dart';
 
@@ -13,7 +13,7 @@ class BridgesByRoutePage extends StatefulWidget {
 }
 
 class _BridgesByRoutePageState extends State<BridgesByRoutePage> {
-  final RouteRepository _locationRepo = RouteRepository();
+  final RoutesRepository _locationRepo = RoutesRepository();
   final BridgesRepository _bridgesRepo = BridgesRepository();
 
   List<Map<String, dynamic>> mainRoutes = [];
@@ -47,7 +47,9 @@ class _BridgesByRoutePageState extends State<BridgesByRoutePage> {
   }
 
   Future<void> _onMainRouteChanged(String? mainRouteId) async {
-    setState(() {
+    if (mainRouteId == selectedMainRouteId) return;
+		
+		setState(() {
       selectedMainRouteId = mainRouteId;
       selectedSubRouteId = null;
       subRoutes = [];

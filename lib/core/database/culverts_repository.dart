@@ -36,11 +36,19 @@ class CulvertsRepository {
 				b.CulvertId,
 				b.CulvertNo,
 				
+				d.DistrictId,
 				d.DistrictName,
+
+				s.SectionId,
 				s.SectionName,
+
+				sg.SegmentId,
 				sg.SegmentName,
 
+				mr.MainRouteId,
 				mr.MainRouteName,
+
+				sr.SubRouteId,
 				sr.SubRouteName
 
 			FROM Culvert b
@@ -56,7 +64,88 @@ class CulvertsRepository {
 			[culvertId],
 		);
 
+		return result.isEmpty ? null : result.first;
+	}
+	
+	Future<void> updateCulvert({
+		required String culvertId,
+		required String culvertNo,
+		required String segmentId,
+		required String subRouteId,
+	}) async {
+		final db = await _dbHelper.database;
+
+		await db.update(
+			'Culvert',
+			{
+				'CulvertNo': culvertNo,
+				'SegmentId': segmentId,
+				'SubRouteId': subRouteId,
+			},
+			where: 'CulvertId = ?',
+			whereArgs: [culvertId],
+		);
+	}
+	
+	Future<bool> culvertNoExists(
+		String culvertNo,
+		String excludeCulvertId,
+	) async {
+		final db = await _dbHelper.database;
+
+		final result = await db.rawQuery(
+			'''
+			SELECT 1 FROM Culvert
+			WHERE CulvertNo = ?
+				AND CulvertId != ?
+			LIMIT 1
+			''',
+			[culvertNo, excludeCulvertId],
+		);
+
+		return result.isNotEmpty;
+	}
+	
+	Future<void> insertCulvert({
+		required String culvertId,
+		required String culvertNo,
+		required String segmentId,
+		required String subRouteId,
+	}) async {
+		final db = await _dbHelper.database;
+
+		await db.insert(
+			'Culvert',
+			{
+				'CulvertId': culvertId,
+				'CulvertNo': culvertNo,
+				'SegmentId': segmentId,
+				'SubRouteId': subRouteId,
+			},
+		);
+	}
+	
+	Future<String?> getNextCulvertNoForSubRoute(String subRouteId) async {
+		final db = await _dbHelper.database;
+
+		final result = await db.rawQuery(
+			'''
+			SELECT CulvertNo
+			FROM Culvert
+			WHERE SubRouteId = ?
+				AND CulvertNo IS NOT NULL
+			ORDER BY
+				CAST(
+					SUBSTR(CulvertNo, INSTR(CulvertNo, '-') + 1)
+					AS INTEGER
+				) DESC
+			LIMIT 1
+			''',
+			[subRouteId],
+		);
+
 		if (result.isEmpty) return null;
-		return result.first;
+
+		return result.first['CulvertNo'] as String;
 	}
 }

@@ -62,7 +62,7 @@ class _BridgesPageState extends State<BridgesPage> {
             icon: const Icon(Icons.add),
             tooltip: 'New Bridge',
             onPressed: () {
-              // TODO: add new bridge
+              context.push('/bridge/new');
             },
           ),
           PopupMenuButton<String>(
@@ -123,36 +123,32 @@ class _BridgesPageState extends State<BridgesPage> {
 						// Search results
 						if (searchResults.isNotEmpty) ...[
 							const SizedBox(height: 4),
-							Container(
-								constraints: const BoxConstraints(maxHeight: 300),
-								decoration: BoxDecoration(
-									color: Theme.of(context).cardColor,
-									border: Border.all(color: Colors.grey.shade300),
+							SizedBox(
+								height: 250,
+								child: Material(
+									elevation: 4,
 									borderRadius: BorderRadius.circular(8),
-								),
-								child: ListView.separated(
-									shrinkWrap: true,
-									physics: const NeverScrollableScrollPhysics(),
-									itemCount: searchResults.length,
-									separatorBuilder: (_, __) =>
-											const Divider(height: 1),
-									itemBuilder: (context, index) {
-										final b = searchResults[index];
-										return ListTile(
-											dense: true,
-											title: Text(
-												'${b['BridgeNo']} – ${b['BridgeName']}',
-											),
-											onTap: () {
-												_clearSearch();
-												context.push('/bridge/${b['BridgeId']}');
-											},
-										);
-									},
+									child: ListView.separated(
+										itemCount: searchResults.length,
+										separatorBuilder: (_, __) =>
+												const Divider(height: 1),
+										itemBuilder: (context, index) {
+											final b = searchResults[index];
+											return ListTile(
+												dense: true,
+												title: Text(
+													'${b['BridgeNo']} – ${b['BridgeName']}',
+												),
+												onTap: () {
+													_clearSearch();
+													context.push('/bridge/${b['BridgeId']}');
+												},
+											);
+										},
+									),
 								),
 							),
 						],
-
 						const SizedBox(height: 20),
 
 						// Quick cards

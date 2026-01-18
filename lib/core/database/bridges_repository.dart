@@ -37,11 +37,19 @@ class BridgesRepository {
 				b.BridgeNo,
 				b.BridgeName,
 
+				d.DistrictId,
 				d.DistrictName,
+
+				s.SectionId,
 				s.SectionName,
+
+				sg.SegmentId,
 				sg.SegmentName,
 
+				mr.MainRouteId,
 				mr.MainRouteName,
+
+				sr.SubRouteId,
 				sr.SubRouteName
 
 			FROM Bridge b
@@ -57,7 +65,92 @@ class BridgesRepository {
 			[bridgeId],
 		);
 
+		return result.isEmpty ? null : result.first;
+	}
+	
+	Future<void> updateBridge({
+		required String bridgeId,
+		required String bridgeNo,
+		required String bridgeName,
+		required String segmentId,
+		required String subRouteId,
+	}) async {
+		final db = await _dbHelper.database;
+
+		await db.update(
+			'Bridge',
+			{
+				'BridgeNo': bridgeNo,
+				'BridgeName': bridgeName,
+				'SegmentId': segmentId,
+				'SubRouteId': subRouteId,
+			},
+			where: 'BridgeId = ?',
+			whereArgs: [bridgeId],
+		);
+	}
+	
+	Future<bool> bridgeNoExists(
+		String bridgeNo,
+		String excludeBridgeId,
+	) async {
+		final db = await _dbHelper.database;
+
+		final result = await db.rawQuery(
+			'''
+			SELECT 1 FROM Bridge
+			WHERE BridgeNo = ?
+				AND BridgeId != ?
+			LIMIT 1
+			''',
+			[bridgeNo, excludeBridgeId],
+		);
+
+		return result.isNotEmpty;
+	}
+	
+	Future<void> insertBridge({
+		required String bridgeId,
+		required String bridgeNo,
+		required String bridgeName,
+		required String segmentId,
+		required String subRouteId,
+	}) async {
+		final db = await _dbHelper.database;
+
+		await db.insert(
+			'Bridge',
+			{
+				'BridgeId': bridgeId,
+				'BridgeNo': bridgeNo,
+				'BridgeName': bridgeName,
+				'SegmentId': segmentId,
+				'SubRouteId': subRouteId,
+			},
+		);
+	}
+	
+	Future<String?> getNextBridgeNoForSubRoute(String subRouteId) async {
+		final db = await _dbHelper.database;
+
+		final result = await db.rawQuery(
+			'''
+			SELECT BridgeNo
+			FROM Bridge
+			WHERE SubRouteId = ?
+				AND BridgeNo IS NOT NULL
+			ORDER BY
+				CAST(
+					SUBSTR(BridgeNo, INSTR(BridgeNo, '-') + 1)
+					AS INTEGER
+				) DESC
+			LIMIT 1
+			''',
+			[subRouteId],
+		);
+
 		if (result.isEmpty) return null;
-		return result.first;
+
+		return result.first['BridgeNo'] as String;
 	}
 }

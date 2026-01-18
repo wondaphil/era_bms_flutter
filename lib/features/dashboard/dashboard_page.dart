@@ -165,7 +165,7 @@ class DashboardPage extends ConsumerWidget {
 									_quickCard(context, AppSvgIcon(asset: 'assets/icons/bridge.svg'), 'Bridges', '/bridges'),
 									_quickCard(context, AppSvgIcon(asset: 'assets/icons/culvert.svg'), 'Culverts', '/culverts'),
 									_quickCard(context, Icon(Icons.description), 'Reports', '/reports'),
-									_quickCard(context, Icon(Icons.bar_chart), 'Graphs', '/graphs'),
+									_quickCard(context, Icon(Icons.bar_chart), 'Charts', '/charts'),
 								],
 							),
 						),

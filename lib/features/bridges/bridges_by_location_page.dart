@@ -50,7 +50,9 @@ class _BridgesByLocationPageState extends State<BridgesByLocationPage> {
   }
 
   Future<void> _onDistrictChanged(String? districtId) async {
-    setState(() {
+    if (districtId == selectedDistrictId) return;
+		
+		setState(() {
       selectedDistrictId = districtId;
       selectedSectionId = null;
       selectedSegmentId = null;
@@ -69,7 +71,9 @@ class _BridgesByLocationPageState extends State<BridgesByLocationPage> {
   }
 
   Future<void> _onSectionChanged(String? sectionId) async {
-    setState(() {
+    if (sectionId == selectedSectionId) return;
+		
+		setState(() {
       selectedSectionId = sectionId;
       selectedSegmentId = null;
       segments = [];

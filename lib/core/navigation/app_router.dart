@@ -5,9 +5,19 @@ import '../../features/culverts/culverts_page.dart';
 import '../../features/bridges/bridges_by_location_page.dart';
 import '../../features/bridges/bridges_by_route_page.dart';
 import '../../features/bridges/bridge_detail_page.dart';
+import '../../features/bridges/bridge_edit_page.dart';
+import '../../features/bridges/bridge_new_page.dart';
 import '../../features/culverts/culverts_by_location_page.dart';
 import '../../features/culverts/culverts_by_route_page.dart';
 import '../../features/culverts/culvert_detail_page.dart';
+import '../../features/culverts/culvert_edit_page.dart';
+import '../../features/culverts/culvert_new_page.dart';
+import '../../features/reports/reports_page.dart';
+import '../../features/reports/inventory_reports_page.dart';
+import '../../features/reports/inspection_reports_page.dart';
+import '../../features/charts/charts_page.dart';
+import '../../features/charts/inventory_charts_page.dart';
+import '../../features/charts/inspection_charts_page.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/',
@@ -48,6 +58,16 @@ final appRouter = GoRouter(
     ),
 		
 		GoRoute(
+			path: '/bridge/new',
+			builder: (context, state) => const BridgeNewPage(),
+		),
+		
+		GoRoute(
+			path: '/culvert/new',
+			builder: (context, state) => const CulvertNewPage(),
+		),
+		
+		GoRoute(
 			path: '/bridge/:id',
 			builder: (context, state) {
 				final bridgeId = state.pathParameters['id']!;
@@ -61,6 +81,52 @@ final appRouter = GoRouter(
 				final culvertId = state.pathParameters['id']!;
 				return CulvertDetailPage(culvertId: culvertId);
 			},
+		),
+		
+		GoRoute(
+			path: '/bridge/edit/:id',
+			builder: (context, state) {
+				final bridgeId = state.pathParameters['id']!;
+				return BridgeEditPage(bridgeId: bridgeId);
+			},
+		),
+		
+		GoRoute(
+			path: '/culvert/edit/:id',
+			builder: (context, state) {
+				final culvertId = state.pathParameters['id']!;
+				return CulvertEditPage(culvertId: culvertId);
+			},
+		),
+		
+		GoRoute(
+			path: '/reports',
+			builder: (context, state) => const ReportsPage(),
+		),
+		
+		GoRoute(
+			path: '/reports/inventory',
+			builder: (context, state) => const InventoryReportsPage(),
+		),
+		
+		GoRoute(
+			path: '/reports/inspection',
+			builder: (context, state) => const InspectionReportsPage(),
+		),
+		
+		GoRoute(
+			path: '/charts',
+			builder: (context, state) => const ChartsPage(),
+		),
+
+		GoRoute(
+			path: '/charts/inventory',
+			builder: (context, state) => const InventoryChartsPage(),
+		),
+
+		GoRoute(
+			path: '/charts/inspection',
+			builder: (context, state) => const InspectionChartsPage(),
 		),
   ],
 );

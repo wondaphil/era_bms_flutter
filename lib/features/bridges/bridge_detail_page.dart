@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../core/database/bridges_repository.dart';
 
 class BridgeDetailPage extends StatefulWidget {
@@ -33,16 +34,7 @@ class _BridgeDetailPageState extends State<BridgeDetailPage> {
     });
   }
 	
-	Future<void> _deleteBridge() async {
-		// TODO: call repository delete method
-		// await _repo.deleteBridge(widget.bridgeId);
-
-		if (!mounted) return;
-
-		Navigator.pop(context); // go back after delete
-	}
-
-  @override
+	@override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -50,13 +42,17 @@ class _BridgeDetailPageState extends State<BridgeDetailPage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.edit),
-            onPressed: () {},
+            tooltip: 'Edit Bridge',
+						onPressed: () async {
+							final updated = await context.push<bool>(
+								'/bridge/edit/${widget.bridgeId}',
+							);
+
+							if (updated == true) {
+								_loadBridge(); // reload data
+							}
+						},
           ),
-          IconButton(
-						icon: const Icon(Icons.delete),
-						tooltip: 'Delete Bridge',
-						onPressed: () => _confirmDelete(context),
-					),
         ],
       ),
       body: loading
@@ -107,32 +103,4 @@ class _BridgeDetailPageState extends State<BridgeDetailPage> {
       ),
     );
   }
-	
-	void _confirmDelete(BuildContext context) {
-		showDialog(
-			context: context,
-			builder: (context) => AlertDialog(
-				title: const Text('Delete Bridge'),
-				content: const Text(
-					'Are you sure you want to delete this bridge?',
-				),
-				actions: [
-					TextButton(
-						onPressed: () => Navigator.pop(context),
-						child: const Text('Cancel'),
-					),
-					TextButton(
-						onPressed: () {
-							Navigator.pop(context);
-							_deleteBridge();
-						},
-						child: const Text(
-							'Delete',
-							style: TextStyle(color: Colors.red),
-						),
-					),
-				],
-			),
-		);
-	}
 }

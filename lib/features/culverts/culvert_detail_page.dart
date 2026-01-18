@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../core/database/culverts_repository.dart';
 
 class CulvertDetailPage extends StatefulWidget {
@@ -32,15 +33,6 @@ class _CulvertDetailPageState extends State<CulvertDetailPage> {
       loading = false;
     });
   }
-	
-	Future<void> _deleteCulvert() async {
-		// TODO: call repository delete method
-		// await _repo.deleteCulvert(widget.culvertId);
-
-		if (!mounted) return;
-
-		Navigator.pop(context); // go back after delete
-	}
 
   @override
   Widget build(BuildContext context) {
@@ -50,13 +42,17 @@ class _CulvertDetailPageState extends State<CulvertDetailPage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.edit),
-            onPressed: () {},
+            tooltip: 'Edit Culvert',
+						onPressed: () async {
+							final updated = await context.push<bool>(
+								'/culvert/edit/${widget.culvertId}',
+							);
+
+							if (updated == true) {
+								_loadCulvert(); // reload data
+							}
+						},
           ),
-          IconButton(
-						icon: const Icon(Icons.delete),
-						tooltip: 'Delete Culvert',
-						onPressed: () => _confirmDelete(context),
-					),
         ],
       ),
       body: loading
@@ -106,32 +102,4 @@ class _CulvertDetailPageState extends State<CulvertDetailPage> {
       ),
     );
   }
-	
-	void _confirmDelete(BuildContext context) {
-		showDialog(
-			context: context,
-			builder: (context) => AlertDialog(
-				title: const Text('Delete Culvert'),
-				content: const Text(
-					'Are you sure you want to delete this culvert?',
-				),
-				actions: [
-					TextButton(
-						onPressed: () => Navigator.pop(context),
-						child: const Text('Cancel'),
-					),
-					TextButton(
-						onPressed: () {
-							Navigator.pop(context);
-							_deleteCulvert();
-						},
-						child: const Text(
-							'Delete',
-							style: TextStyle(color: Colors.red),
-						),
-					),
-				],
-			),
-		);
-	}
 }

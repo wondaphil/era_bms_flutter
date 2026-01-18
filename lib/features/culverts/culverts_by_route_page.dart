@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../core/database/route_repository.dart';
+import '../../core/database/routes_repository.dart';
 import '../../core/database/culverts_repository.dart';
 import '../../core/widgets/app_svg_icon.dart';
 
@@ -13,7 +13,7 @@ class CulvertsByRoutePage extends StatefulWidget {
 }
 
 class _CulvertsByRoutePageState extends State<CulvertsByRoutePage> {
-  final RouteRepository _locationRepo = RouteRepository();
+  final RoutesRepository _locationRepo = RoutesRepository();
   final CulvertsRepository _culvertsRepo = CulvertsRepository();
 
   List<Map<String, dynamic>> mainRoutes = [];
@@ -47,7 +47,9 @@ class _CulvertsByRoutePageState extends State<CulvertsByRoutePage> {
   }
 
   Future<void> _onMainRouteChanged(String? mainRouteId) async {
-    setState(() {
+    if (mainRouteId == selectedMainRouteId) return;
+		
+		setState(() {
       selectedMainRouteId = mainRouteId;
       selectedSubRouteId = null;
       subRoutes = [];
