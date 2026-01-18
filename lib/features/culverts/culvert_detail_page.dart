@@ -33,8 +33,8 @@ class _CulvertDetailPageState extends State<CulvertDetailPage> {
       loading = false;
     });
   }
-
-  @override
+	
+	@override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -71,6 +71,84 @@ class _CulvertDetailPageState extends State<CulvertDetailPage> {
                       _field(context, 'Segment', culvert!['SegmentName']),
                       _field(context, 'Main Route', culvert!['MainRouteName']),
                       _field(context, 'Sub Route', culvert!['SubRouteName']),
+											const SizedBox(height: 24),
+
+											// ---------- ROW 1 ----------
+											Row(
+												children: [
+													Expanded(
+														child: _quickCard(
+															context: context,
+															icon: Icons.description,
+															title: 'Culvert Profile',
+															onTap: null, // later
+														),
+													),
+													const SizedBox(width: 12),
+													Expanded(
+														child: _quickCard(
+															context: context,
+															icon: Icons.assignment,
+															title: 'Major Inspection',
+															onTap: null, // later
+														),
+													),
+												],
+											),
+
+											const SizedBox(height: 12),
+
+											// ---------- ROW 2 ----------
+											Row(
+												children: [
+													Expanded(
+														child: _quickCard(
+															context: context,
+															icon: Icons.visibility,
+															title: 'Visual Inspection',
+															onTap: null, // later
+														),
+													),
+													const SizedBox(width: 12),
+													Expanded(
+														child: _quickCard(
+															context: context,
+															icon: Icons.build,
+															title: 'Improvement',
+															onTap: null, // later
+														),
+													),
+												],
+											),
+
+											const SizedBox(height: 12),
+
+											// ---------- ROW 3 ----------
+											Row(
+												children: [
+													Expanded(
+														child: _quickCard(
+															context: context,
+															icon: Icons.map,
+															title: 'Culvert Map',
+															onTap: () {
+																context.push('/culvert/map/${widget.culvertId}');
+															},
+														),
+													),
+													const SizedBox(width: 12),
+													Expanded(
+														child: _quickCard(
+															context: context,
+															icon: Icons.route,
+															title: 'Map by Segment',
+															onTap: () {
+																context.push('/culvert/segmentmap/${culvert!['SegmentId']}');
+															},
+														),
+													),
+												],
+											),
                     ],
                   ),
                 ),
@@ -102,4 +180,49 @@ class _CulvertDetailPageState extends State<CulvertDetailPage> {
       ),
     );
   }
+	
+	Widget _quickCard({
+		required BuildContext context,
+		required IconData icon,
+		required String title,
+		VoidCallback? onTap,
+	}) {
+		return SizedBox(
+			height: 110,
+			child: Card(
+				elevation: 1,
+				shape: RoundedRectangleBorder(
+					borderRadius: BorderRadius.circular(12),
+				),
+				child: InkWell(
+					borderRadius: BorderRadius.circular(12),
+					onTap: onTap,
+					child: Padding(
+						padding: const EdgeInsets.all(12),
+						child: Column(
+							mainAxisAlignment: MainAxisAlignment.center,
+							children: [
+								Icon(
+									icon,
+									size: 32,
+									color: onTap == null
+											? Colors.grey
+											: Theme.of(context).colorScheme.primary,
+								),
+								const SizedBox(height: 8),
+								Text(
+									title,
+									textAlign: TextAlign.center,
+									maxLines: 2,
+									style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+												color: onTap == null ? Colors.grey : null,
+											),
+								),
+							],
+						),
+					),
+				),
+			),
+		);
+	}
 }

@@ -20,6 +20,8 @@ import '../../features/charts/inventory_charts_page.dart';
 import '../../features/charts/inspection_charts_page.dart';
 import '../../features/maps/bridge_map_page.dart';
 import '../../features/maps/bridge_map_by_segment_page.dart';
+import '../../features/maps/culvert_map_page.dart';
+import '../../features/maps/culvert_map_by_segment_page.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/',
@@ -140,10 +142,26 @@ final appRouter = GoRouter(
 		),
 
 		GoRoute(
-			path: '/segment/map/:segmentId',
+			path: '/culvert/map/:id',
+			builder: (context, state) {
+				final culvertId = state.pathParameters['id']!;
+				return CulvertMapPage(culvertId: culvertId);
+			},
+		),
+
+		GoRoute(
+			path: '/bridge/segmentmap/:segmentId',
 			builder: (context, state) {
 				final segmentId = state.pathParameters['segmentId']!;
 				return BridgeMapBySegmentPage(segmentId: segmentId);
+			},
+		),
+
+		GoRoute(
+			path: '/culvert/segmentmap/:segmentId',
+			builder: (context, state) {
+				final segmentId = state.pathParameters['segmentId']!;
+				return CulvertMapBySegmentPage(segmentId: segmentId);
 			},
 		),
   ],

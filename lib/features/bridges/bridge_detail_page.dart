@@ -144,7 +144,7 @@ class _BridgeDetailPageState extends State<BridgeDetailPage> {
 															icon: Icons.route,
 															title: 'Map by Segment',
 															onTap: () {
-																context.push('/segment/map/${bridge!['SegmentId']}');
+																context.push('/bridge/segmentmap/${bridge!['SegmentId']}');
 															},
 														),
 													),

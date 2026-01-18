@@ -37,21 +37,30 @@ class CulvertsRepository {
 				b.CulvertNo,
 				
 				d.DistrictId,
+				d.DistrictNo,
 				d.DistrictName,
 
 				s.SectionId,
+				s.SectionNo,
 				s.SectionName,
 
 				sg.SegmentId,
+				sg.SegmentNo,
 				sg.SegmentName,
 
 				mr.MainRouteId,
+				mr.MainRouteNo,
 				mr.MainRouteName,
 
 				sr.SubRouteId,
-				sr.SubRouteName
+				sr.SubRouteNo,
+				sr.SubRouteName,
+				
+				gen.KMFromAddis
 
 			FROM Culvert b
+			LEFT JOIN CulvertGeneralInfo gen ON gen.CulvertId = b.CulvertId
+			
 			LEFT JOIN Segment sg ON b.SegmentId = sg.SegmentId
 			LEFT JOIN Section s ON sg.SectionId = s.SectionId
 			LEFT JOIN District d ON s.DistrictId = d.DistrictId
@@ -147,5 +156,45 @@ class CulvertsRepository {
 		if (result.isEmpty) return null;
 
 		return result.first['CulvertNo'] as String;
+	}
+	
+	Future<Map<String, dynamic>?> getCulvertCoordinates(String culvertId) async {
+		final db = await _dbHelper.database;
+
+		final result = await db.rawQuery('''
+			SELECT 
+				g.XCoord,
+				g.YCoord,
+				z.UtmZone
+			FROM CulvertGeneralInfo g
+			JOIN UTMZoneEthiopia z ON g.UtmZoneId = z.UtmZoneId
+			WHERE g.CulvertId = ?
+			LIMIT 1
+		''', [culvertId]);
+
+		return result.isNotEmpty ? result.first : null;
+	}
+	
+	Future<List<Map<String, dynamic>>> getCulvertsInfoBySegment(String segmentId) async {
+		final db = await _dbHelper.database;
+
+		return db.rawQuery('''
+			SELECT 
+				b.CulvertId,
+				b.CulvertNo,
+				b.CulvertName,
+				s.SegmentNo,
+				s.SegmentName,
+				g.XCoord,
+				g.YCoord,
+				z.UtmZone
+			FROM Culvert b
+			JOIN CulvertGeneralInfo g ON b.CulvertId = g.CulvertId
+			JOIN Segment s ON s.SegmentId = b.SegmentId
+			JOIN UTMZoneEthiopia z ON g.UtmZoneId = z.UtmZoneId
+			WHERE b.SegmentId = ?
+				AND g.XCoord IS NOT NULL
+				AND g.YCoord IS NOT NULL
+		''', [segmentId]);
 	}
 }
