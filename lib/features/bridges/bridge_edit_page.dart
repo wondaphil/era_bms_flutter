@@ -27,6 +27,7 @@ class _BridgeEditPageState extends State<BridgeEditPage> {
 
   // Text controllers
   final TextEditingController _bridgeNoCtrl = TextEditingController();
+  final TextEditingController _revisedBridgeNoCtrl = TextEditingController();
   final TextEditingController _bridgeNameCtrl = TextEditingController();
 
   // Dropdown data
@@ -69,6 +70,7 @@ class _BridgeEditPageState extends State<BridgeEditPage> {
 
 		// Assign text fields
 		_bridgeNoCtrl.text = bridge['BridgeNo'];
+		_revisedBridgeNoCtrl.text = bridge['RevisedBridgeNo'];
 		_bridgeNameCtrl.text = bridge['BridgeName'];
 
 		// Assign selected IDs (AFTER items exist)
@@ -124,6 +126,7 @@ class _BridgeEditPageState extends State<BridgeEditPage> {
 		await _bridgesRepo.updateBridge(
 			bridgeId: widget.bridgeId,
 			bridgeNo: _bridgeNoCtrl.text.trim(),
+			revisedBridgeNo: _revisedBridgeNoCtrl.text.trim(),
 			bridgeName: _bridgeNameCtrl.text.trim(),
 			segmentId: segmentId!,
 			subRouteId: subRouteId!,
@@ -178,8 +181,15 @@ class _BridgeEditPageState extends State<BridgeEditPage> {
 
                     _textField(
                       controller: _bridgeNoCtrl,
-                      label: 'Bridge No',
+                      label: 'Bridge Id',
                       required: true,
+											textColor: Colors.red,
+                    ),
+
+                    _textField(
+                      controller: _revisedBridgeNoCtrl,
+                      label: 'Revised Id',
+                      required: false,
 											textColor: Colors.red,
                     ),
 

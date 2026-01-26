@@ -35,12 +35,13 @@ class CulvertsRepository {
 			SELECT 
 				b.CulvertId,
 				b.CulvertNo,
+				b.revisedCulvertNo,
 				
 				d.DistrictId,
 				d.DistrictNo,
 				d.DistrictName,
 
-				s.SectionId,
+				s.SectionId,r
 				s.SectionNo,
 				s.SectionName,
 
@@ -79,6 +80,7 @@ class CulvertsRepository {
 	Future<void> updateCulvert({
 		required String culvertId,
 		required String culvertNo,
+		required String revisedCulvertNo,
 		required String segmentId,
 		required String subRouteId,
 	}) async {
@@ -88,6 +90,7 @@ class CulvertsRepository {
 			'Culvert',
 			{
 				'CulvertNo': culvertNo,
+				'RevisedCulvertNo': revisedCulvertNo,
 				'SegmentId': segmentId,
 				'SubRouteId': subRouteId,
 			},
@@ -118,6 +121,7 @@ class CulvertsRepository {
 	Future<void> insertCulvert({
 		required String culvertId,
 		required String culvertNo,
+		required String revisedCulvertNo,
 		required String segmentId,
 		required String subRouteId,
 	}) async {
@@ -128,6 +132,8 @@ class CulvertsRepository {
 			{
 				'CulvertId': culvertId,
 				'CulvertNo': culvertNo,
+				'RevisedCulvertNo': revisedCulvertNo,
+				'revisedCulvertNo': revisedCulvertNo,
 				'SegmentId': segmentId,
 				'SubRouteId': subRouteId,
 			},
@@ -182,7 +188,7 @@ class CulvertsRepository {
 			SELECT 
 				b.CulvertId,
 				b.CulvertNo,
-				b.CulvertName,
+				b.RevisedCulvertNo,
 				s.SegmentNo,
 				s.SegmentName,
 				g.XCoord,

@@ -22,6 +22,9 @@ import '../../features/maps/bridge_map_page.dart';
 import '../../features/maps/bridge_map_by_segment_page.dart';
 import '../../features/maps/culvert_map_page.dart';
 import '../../features/maps/culvert_map_by_segment_page.dart';
+import '../../features/settings/settings_page.dart';
+import '../../features/settings/download_data_page.dart';
+import '../../features/settings/view_all_tables_page.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/',
@@ -163,6 +166,21 @@ final appRouter = GoRouter(
 				final segmentId = state.pathParameters['segmentId']!;
 				return CulvertMapBySegmentPage(segmentId: segmentId);
 			},
+		),
+		
+		GoRoute(
+			path: '/settings',
+			builder: (context, state) => const SettingsPage(),
+		),
+
+		GoRoute(
+			path: '/settings/tables',
+			builder: (context, state) => const ViewAllTablesPage(),
+		),
+		
+		GoRoute(
+			path: '/settings/download',
+			builder: (_, __) => const DownloadDataPage(),
 		),
   ],
 );

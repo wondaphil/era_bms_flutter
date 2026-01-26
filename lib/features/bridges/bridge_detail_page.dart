@@ -65,7 +65,8 @@ class _BridgeDetailPageState extends State<BridgeDetailPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _field(context, 'Serial No.', bridge!['BridgeId']),
-                      _field(context, 'Bridge No', bridge!['BridgeNo']),
+                      _field(context, 'Bridge Id', bridge!['BridgeNo']),
+                      _field(context, 'Revised Id', bridge!['RevisedBridgeNo']),
                       _field(context, 'Bridge Name', bridge!['BridgeName']),
                       _field(context, 'District', bridge!['DistrictName']),
                       _field(context, 'Section', bridge!['SectionName']),

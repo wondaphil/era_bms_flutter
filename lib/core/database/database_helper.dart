@@ -9,6 +9,8 @@ class DatabaseHelper {
 
   static Database? _database;
 
+  static const String dbFileName = 'era_bms.db';
+
   Future<Database> get database async {
     if (_database != null) return _database!;
     _database = await _initDatabase();
@@ -17,18 +19,29 @@ class DatabaseHelper {
 
   Future<Database> _initDatabase() async {
     final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'era_bms.db');
+    final path = join(dbPath, dbFileName);
 
     final exists = await databaseExists(path);
 
     if (!exists) {
-      // Copy from assets
       final data = await rootBundle.load('assets/db/era_bms.db3');
       final bytes =
           data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
       await File(path).writeAsBytes(bytes);
     }
 
-    return openDatabase(path, readOnly: false);
+    return openDatabase(path);
+  }
+	
+	Future<String> getDatabasePath() async {
+    final dbPath = await getDatabasesPath();
+    return join(dbPath, dbFileName);
+  }
+
+  Future<void> closeDatabase() async {
+    if (_database != null) {
+      await _database!.close();
+      _database = null;
+    }
   }
 }

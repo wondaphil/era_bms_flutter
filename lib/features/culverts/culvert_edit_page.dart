@@ -27,6 +27,7 @@ class _CulvertEditPageState extends State<CulvertEditPage> {
 
   // Text controllers
   final TextEditingController _culvertNoCtrl = TextEditingController();
+  final TextEditingController _revisedCulvertNoCtrl = TextEditingController();
   
   // Dropdown data
   List<Map<String, dynamic>> districts = [];
@@ -68,6 +69,7 @@ class _CulvertEditPageState extends State<CulvertEditPage> {
 
 		// Assign text fields
 		_culvertNoCtrl.text = culvert['CulvertNo'];
+		_revisedCulvertNoCtrl.text = culvert['RevisedCulvertNo'];
 		
 		// Assign selected IDs (AFTER items exist)
 		districtId = culvert['DistrictId'];
@@ -122,6 +124,7 @@ class _CulvertEditPageState extends State<CulvertEditPage> {
 		await _culvertsRepo.updateCulvert(
 			culvertId: widget.culvertId,
 			culvertNo: _culvertNoCtrl.text.trim(),
+			revisedCulvertNo: _revisedCulvertNoCtrl.text.trim(),
 			segmentId: segmentId!,
 			subRouteId: subRouteId!,
 		);
@@ -175,8 +178,15 @@ class _CulvertEditPageState extends State<CulvertEditPage> {
 
                     _textField(
                       controller: _culvertNoCtrl,
-                      label: 'Culvert No',
+                      label: 'Culvert Id',
                       required: true,
+											textColor: Colors.red,
+                    ),
+
+                    _textField(
+                      controller: _revisedCulvertNoCtrl,
+                      label: 'Revised Id',
+                      required: false,
 											textColor: Colors.red,
                     ),
 

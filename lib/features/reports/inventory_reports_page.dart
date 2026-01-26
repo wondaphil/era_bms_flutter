@@ -331,7 +331,7 @@ class _InventoryReportsPageState extends State<InventoryReportsPage> {
 				if (_selected == InventoryReportType.bridgesByBridgeType) {
 					int total = 0;
 					for (final r in rows) {
-						total += (r['Count'] as int? ?? 0);
+						total += (r['BridgeCount'] as int? ?? 0);
 					}
 
 					return Scrollbar(
@@ -383,7 +383,7 @@ class _InventoryReportsPageState extends State<InventoryReportsPage> {
 				if (_selected == InventoryReportType.culvertsByCulvertType) {
 					int total = 0;
 					for (final r in rows) {
-						total += (r['Count'] as int? ?? 0);
+						total += (r['CulvertCount'] as int? ?? 0);
 					}
 
 					return Scrollbar(

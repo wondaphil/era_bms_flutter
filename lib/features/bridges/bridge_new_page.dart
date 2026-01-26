@@ -21,6 +21,7 @@ class _BridgeNewPageState extends State<BridgeNewPage> {
   final RoutesRepository _routesRepo = RoutesRepository();
 
   final TextEditingController _bridgeNoCtrl = TextEditingController();
+  final TextEditingController _revisedBridgeNoCtrl = TextEditingController();
   final TextEditingController _bridgeNameCtrl = TextEditingController();
 
   List<Map<String, dynamic>> districts = [];
@@ -108,6 +109,7 @@ class _BridgeNewPageState extends State<BridgeNewPage> {
     await _bridgesRepo.insertBridge(
       bridgeId: newBridgeId,
       bridgeNo: bridgeNo,
+      revisedBridgeNo: _revisedBridgeNoCtrl.text.trim(),
       bridgeName: _bridgeNameCtrl.text.trim(),
       segmentId: segmentId!,
       subRouteId: subRouteId!,
@@ -250,10 +252,17 @@ class _BridgeNewPageState extends State<BridgeNewPage> {
 										
 										_textField(
                       controller: _bridgeNoCtrl,
-                      label: 'Bridge No',
+                      label: 'Bridge Id',
                       required: true,
                       textColor: Colors.red,
 											hintText: 'Suggested here',
+                    ),
+
+                    _textField(
+                      controller: _revisedBridgeNoCtrl,
+                      label: 'Revised Id',
+                      required: false,
+                      textColor: Colors.red,
                     ),
 
                     _textField(

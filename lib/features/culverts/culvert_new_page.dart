@@ -21,6 +21,7 @@ class _CulvertNewPageState extends State<CulvertNewPage> {
   final RoutesRepository _routesRepo = RoutesRepository();
 
   final TextEditingController _culvertNoCtrl = TextEditingController();
+  final TextEditingController _revisedCulvertNoCtrl = TextEditingController();
   
   List<Map<String, dynamic>> districts = [];
   List<Map<String, dynamic>> sections = [];
@@ -107,6 +108,7 @@ class _CulvertNewPageState extends State<CulvertNewPage> {
     await _culvertsRepo.insertCulvert(
       culvertId: newCulvertId,
       culvertNo: culvertNo,
+      revisedCulvertNo: _revisedCulvertNoCtrl.text.trim(),
       segmentId: segmentId!,
       subRouteId: subRouteId!,
     );
@@ -249,10 +251,17 @@ class _CulvertNewPageState extends State<CulvertNewPage> {
 										
 										_textField(
                       controller: _culvertNoCtrl,
-                      label: 'Culvert No',
+                      label: 'Culvert Id',
                       required: true,
                       textColor: Colors.red,
 											hintText: 'Suggested here',
+                    ),
+										
+										_textField(
+                      controller: _revisedCulvertNoCtrl,
+                      label: 'Revised Id',
+                      required: false,
+                      textColor: Colors.red
                     ),
                   ],
                 ),

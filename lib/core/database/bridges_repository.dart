@@ -35,6 +35,7 @@ class BridgesRepository {
 			SELECT 
 				b.BridgeId,
 				b.BridgeNo,
+				b.RevisedBridgeNo,
 				b.BridgeName,
 
 				d.DistrictId,
@@ -80,6 +81,7 @@ class BridgesRepository {
 	Future<void> updateBridge({
 		required String bridgeId,
 		required String bridgeNo,
+		required String revisedBridgeNo,
 		required String bridgeName,
 		required String segmentId,
 		required String subRouteId,
@@ -90,6 +92,7 @@ class BridgesRepository {
 			'Bridge',
 			{
 				'BridgeNo': bridgeNo,
+				'RevisedBridgeNo': revisedBridgeNo,
 				'BridgeName': bridgeName,
 				'SegmentId': segmentId,
 				'SubRouteId': subRouteId,
@@ -121,6 +124,7 @@ class BridgesRepository {
 	Future<void> insertBridge({
 		required String bridgeId,
 		required String bridgeNo,
+		required String revisedBridgeNo,
 		required String bridgeName,
 		required String segmentId,
 		required String subRouteId,
@@ -132,6 +136,7 @@ class BridgesRepository {
 			{
 				'BridgeId': bridgeId,
 				'BridgeNo': bridgeNo,
+				'RevisedBridgeNo': revisedBridgeNo,
 				'BridgeName': bridgeName,
 				'SegmentId': segmentId,
 				'SubRouteId': subRouteId,
@@ -187,6 +192,7 @@ class BridgesRepository {
 			SELECT 
 				b.BridgeId,
 				b.BridgeNo,
+				b.RevisedBridgeNo,
 				b.BridgeName,
 				s.SegmentNo,
 				s.SegmentName,

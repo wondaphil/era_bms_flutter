@@ -65,7 +65,8 @@ class _CulvertDetailPageState extends State<CulvertDetailPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _field(context, 'Serial No.', culvert!['CulvertId']),
-                      _field(context, 'Culvert No', culvert!['CulvertNo']),
+                      _field(context, 'Culvert Id', culvert!['CulvertNo']),
+                      _field(context, 'Revised Id', culvert!['RevisedCulvertNo']),
                       _field(context, 'District', culvert!['DistrictName']),
                       _field(context, 'Section', culvert!['SectionName']),
                       _field(context, 'Segment', culvert!['SegmentName']),
