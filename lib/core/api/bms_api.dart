@@ -2,9 +2,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'api_config.dart';
 
-/// Base API URL (to be configured later)
-const String API_URL = 'http://wondaphil-002-site3.ktempurl.com/';
-
 class BmsApi {
   Future<List<Map<String, dynamic>>> _getList(String endpoint) async {
     final baseUrl = await ApiConfig.getBaseUrl();

@@ -1,37 +1,39 @@
-// lib/core/api/bms_api_visual_inspection.dart
-
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'api_config.dart';
 
-/// Assumes a global API_URL like:
-/// const API_URL = 'http://example.com/';
 class BmsApiVisualInspection {
-  final String baseUrl;
+  Future<List<Map<String, dynamic>>> _getList(String endpoint) async {
+    final baseUrl = await ApiConfig.getBaseUrl();
 
-  BmsApiVisualInspection(this.baseUrl);
-
-  // ------------------------
-  // Internal helper
-  // ------------------------
-  Future<List<dynamic>> _postList(String endpoint) async {
-    final url = Uri.parse('$baseUrl/api/BmsAPIVisualInspection/$endpoint');
-    final response = await http.post(url);
-
-    if (response.statusCode != 200) {
-      throw Exception('Failed to load $endpoint');
+    if (baseUrl.isEmpty) {
+      throw Exception('API URL not configured');
     }
 
-    return jsonDecode(response.body) as List<dynamic>;
-  }
+    final uri = Uri.parse('$baseUrl/api/BmsAPIVisualInspection/$endpoint');
 
-  // ------------------------
+    final response = await http.post(uri); // POST (as you confirmed)
+
+    if (response.statusCode != 200) {
+      throw Exception('API error [$endpoint]: ${response.statusCode}');
+    }
+
+    final decoded = jsonDecode(response.body);
+
+    if (decoded is! List) {
+      throw Exception('Unexpected response format from $endpoint');
+    }
+
+    return decoded.cast<Map<String, dynamic>>();
+  }
+// ------------------------
   // Visual Inspection APIs
   // (parameter-less only)
   // ------------------------
 
-  Future<List<dynamic>> getAllDamageInspVisuals() =>
-      _postList('GetAllDamageInspVisuals');
+  Future<List<Map<String, dynamic>>> getDamageInspVisualList() =>
+      _getList('GetDamageInspVisualList');
 
-  Future<List<dynamic>> getDamageSeverityList() =>
-      _postList('GetDamageSeverityList');
+  Future<List<Map<String, dynamic>>> getDamageSeverityList() =>
+      _getList('GetDamageSeverityList');
 }

@@ -1,96 +1,103 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'api_config.dart';
 
-/// NOTE:
-/// API_URL is assumed to be a global value
-/// e.g. const API_URL = 'https://example.com/';
-///
-/// All endpoints are POST (matching your controller)
 class BmsApiBridgeInventory {
-  final String baseUrl;
+  Future<List<Map<String, dynamic>>> _getList(String endpoint) async {
+    final baseUrl = await ApiConfig.getBaseUrl();
 
-  BmsApiBridgeInventory(this.baseUrl);
-
-  // ------------------------
-  // Internal helper
-  // ------------------------
-  Future<List<dynamic>> _postList(String endpoint) async {
-    final url = Uri.parse('$baseUrl/api/BmsAPIBridgeInventory/$endpoint');
-
-    final response = await http.post(url);
-
-    if (response.statusCode != 200) {
-      throw Exception('Failed to load $endpoint');
+    if (baseUrl.isEmpty) {
+      throw Exception('API URL not configured');
     }
 
-    return jsonDecode(response.body) as List<dynamic>;
+    final uri = Uri.parse('$baseUrl/api/BmsAPIBridgeInventory/$endpoint');
+
+    final response = await http.post(uri); // POST (as you confirmed)
+
+    if (response.statusCode != 200) {
+      throw Exception('API error [$endpoint]: ${response.statusCode}');
+    }
+
+    final decoded = jsonDecode(response.body);
+
+    if (decoded is! List) {
+      throw Exception('Unexpected response format from $endpoint');
+    }
+
+    return decoded.cast<Map<String, dynamic>>();
   }
 
   // ------------------------
   // Bridge Inventory APIs
   // ------------------------
 
-  Future<List<dynamic>> getSuperStructureList() =>
-      _postList('GetSuperStructureList');
+  Future<List<Map<String, dynamic>>> getBridgeGeneralInfoList() =>
+      _getList('GetBridgeGeneralInfoList');
 
-  Future<List<dynamic>> getAbutmentList() =>
-      _postList('GetAbutmentList');
+  Future<List<Map<String, dynamic>>> getSuperStructureList() =>
+      _getList('GetSuperStructureList');
 
-  Future<List<dynamic>> getAncillariesList() =>
-      _postList('GetAncillariesList');
+  Future<List<Map<String, dynamic>>> getAbutmentList() =>
+      _getList('GetAbutmentList');
 
-  Future<List<dynamic>> getPierList() =>
-      _postList('GetPierList');
+  Future<List<Map<String, dynamic>>> getAncillariesList() =>
+      _getList('GetAncillariesList');
 
-  Future<List<dynamic>> getBridgeDocList() =>
-      _postList('GetBridgeDocList');
+  Future<List<Map<String, dynamic>>> getPierList() =>
+      _getList('GetPierList');
 
-  Future<List<dynamic>> getBridgeMediaList() =>
-      _postList('GetBridgeMediaList');
+  Future<List<Map<String, dynamic>>> getDocTypeList() =>
+      _getList('GetDocTypeList');
+
+  Future<List<Map<String, dynamic>>> getBridgeDocList() =>
+      _getList('GetBridgeDocList');
+
+  Future<List<Map<String, dynamic>>> getBridgeMediaList() =>
+      _getList('GetBridgeMediaList');
 
   // ------------------------
   // Reference / Lookup Tables
   // ------------------------
 
-  Future<List<dynamic>> getRoadAlignmentTypeList() =>
-      _postList('GetRoadAlignmentTypeList');
+  Future<List<Map<String, dynamic>>> getRoadAlignmentTypeList() =>
+      _getList('GetRoadAlignmentTypeList');
 
-  Future<List<dynamic>> getBridgeTypeList() =>
-      _postList('GetBridgeTypeList');
+  Future<List<Map<String, dynamic>>> getBridgeTypeList() =>
+      _getList('GetBridgeTypeList');
 
-  Future<List<dynamic>> getSpanSupportTypeList() =>
-      _postList('GetSpanSupportTypeList');
+  Future<List<Map<String, dynamic>>> getSpanSupportTypeList() =>
+      _getList('GetSpanSupportTypeList');
 
-  Future<List<dynamic>> getDeckSlabTypeList() =>
-      _postList('GetDeckSlabTypeList');
+  Future<List<Map<String, dynamic>>> getDeckSlabTypeList() =>
+      _getList('GetDeckSlabTypeList');
 
-  Future<List<dynamic>> getGirderTypeList() =>
-      _postList('GetGirderTypeList');
+  Future<List<Map<String, dynamic>>> getGirderTypeList() =>
+      _getList('GetGirderTypeList');
 
-  Future<List<dynamic>> getAbutmentTypeList() =>
-      _postList('GetAbutmentTypeList');
+  Future<List<Map<String, dynamic>>> getAbutmentTypeList() =>
+      _getList('GetAbutmentTypeList');
 
-  Future<List<dynamic>> getFoundationTypeList() =>
-      _postList('GetFoundationTypeList');
+  Future<List<Map<String, dynamic>>> getFoundationTypeList() =>
+      _getList('GetFoundationTypeList');
 
-  Future<List<dynamic>> getSoilTypeList() =>
-      _postList('GetSoilTypeList');
+  Future<List<Map<String, dynamic>>> getSoilTypeList() =>
+      _getList('GetSoilTypeList');
 
-  Future<List<dynamic>> getExpansionJointTypeList() =>
-      _postList('GetExpansionJointTypeList');
+  Future<List<Map<String, dynamic>>> getExpansionJointTypeList() =>
+      _getList('GetExpansionJointTypeList');
 
-  Future<List<dynamic>> getBearingTypeList() =>
-      _postList('GetBearingTypeList');
+  Future<List<Map<String, dynamic>>> getBearingTypeList() =>
+      _getList('GetBearingTypeList');
 
-  Future<List<dynamic>> getGuardRailingTypeList() =>
-      _postList('GetGuardRailingTypeList');
+  Future<List<Map<String, dynamic>>> getGuardRailingTypeList() =>
+      _getList('GetGuardRailingTypeList');
 
-  Future<List<dynamic>> getSurfaceTypeList() =>
-      _postList('GetSurfaceTypeList');
+  Future<List<Map<String, dynamic>>> getSurfaceTypeList() =>
+      _getList('GetSurfaceTypeList');
 
-  Future<List<dynamic>> getPierTypeList() =>
-      _postList('GetPierTypeList');
+  Future<List<Map<String, dynamic>>> getPierTypeList() =>
+      _getList('GetPierTypeList');
 
-  Future<List<dynamic>> getMediaTypeList() =>
-      _postList('GetMediaTypeList');
+  Future<List<Map<String, dynamic>>> getMediaTypeList() =>
+      _getList('GetMediaTypeList');
 }

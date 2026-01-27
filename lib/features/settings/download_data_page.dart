@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import '../../core/sync/data_download_service.dart';
 import '../../core/api/api_config.dart';
@@ -23,6 +24,11 @@ class _DownloadDataPageState extends State<DownloadDataPage> {
 	bool _testingConnection = false;
 	String? _testResult;
 	Color? _testResultColor;
+	
+	DateTime? _startTime;
+	Timer? _timer;
+	String _elapsedText = '';
+	double _progress = 0.0;
 
   final List<String> _schemes = ['http://', 'https://'];
   String _selectedScheme = 'http://';
@@ -79,12 +85,12 @@ class _DownloadDataPageState extends State<DownloadDataPage> {
 			await BmsApi().getDistrictList();
 
 			setState(() {
-				_testResult = 'Connection successful';
+				_testResult = 'Successful';
 				_testResultColor = Colors.green;
 			});
 		} catch (e) {
 			setState(() {
-				_testResult = 'Connection failed';
+				_testResult = 'Failed';
 				_testResultColor = Colors.red;
 			});
 		} finally {
@@ -111,9 +117,26 @@ class _DownloadDataPageState extends State<DownloadDataPage> {
 						_statusText = progress.message;
 						_currentStep = progress.current;
 						_totalSteps = progress.total;
+
+						_progress = progress.total == 0
+								? 0.0
+								: progress.current / progress.total;
 					});
 				},
       );
+			
+			_startTime = DateTime.now();
+
+			_timer = Timer.periodic(const Duration(seconds: 1), (_) {
+				if (_startTime == null) return;
+
+				final elapsed = DateTime.now().difference(_startTime!);
+				setState(() {
+					_elapsedText =
+							'Elapsed: ${elapsed.inMinutes.toString().padLeft(2, '0')}:'
+							'${(elapsed.inSeconds % 60).toString().padLeft(2, '0')}';
+				});
+			});
 
       await service.start();
 
@@ -121,6 +144,9 @@ class _DownloadDataPageState extends State<DownloadDataPage> {
 
       setState(() => _downloading = false);
 
+			_timer?.cancel();
+			_timer = null;
+			
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
@@ -136,7 +162,9 @@ class _DownloadDataPageState extends State<DownloadDataPage> {
       );
     } catch (e) {
       setState(() => _downloading = false);
-
+			_timer?.cancel();
+			_timer = null;
+			
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
@@ -308,25 +336,25 @@ class _DownloadDataPageState extends State<DownloadDataPage> {
 
 							const Spacer(),
 
-							// ---------- STATUS ----------
 							if (_downloading) ...[
+								// ---------- PROGRESS BAR ----------
+								LinearProgressIndicator(value: _progress),
+								const SizedBox(height: 8),
+
+								// ---------- STATUS TEXT ----------
 								Text(
 									_statusText,
 									style: const TextStyle(fontWeight: FontWeight.w600),
 								),
-								const SizedBox(height: 6),
+
+								// ---------- ELAPSED TIME ----------
+								const SizedBox(height: 4),
 								Text(
-									'$_currentStep / $_totalSteps tables',
-									style: Theme.of(context)
-											.textTheme
-											.bodySmall
-											?.copyWith(color: Colors.black54),
-								),
-								const SizedBox(height: 8),
-								LinearProgressIndicator(
-									value: _totalSteps == 0
-											? null
-											: _currentStep / _totalSteps,
+									_elapsedText,
+									style: const TextStyle(
+										fontSize: 12,
+										color: Colors.black54,
+									),
 								),
 							],
 
@@ -345,19 +373,22 @@ class _DownloadDataPageState extends State<DownloadDataPage> {
 							const SizedBox(height: 12),
 
 							// ---------- START BUTTON ----------
-							SizedBox(
-								width: double.infinity,
-								child: ElevatedButton.icon(
-									icon: _downloading
-											? const SizedBox(
-													width: 18,
-													height: 18,
-													child: CircularProgressIndicator(strokeWidth: 2),
-												)
-											: const Icon(Icons.download),
-									label: const Text('Start Download'),
-									onPressed:
-											(!_hasInternet || _downloading) ? null : _startDownload,
+							SafeArea(
+								minimum: const EdgeInsets.only(bottom: 12),
+								child: SizedBox(
+									width: double.infinity,
+									child: ElevatedButton.icon(
+										icon: _downloading
+												? const SizedBox(
+														width: 18,
+														height: 18,
+														child: CircularProgressIndicator(strokeWidth: 2),
+													)
+												: const Icon(Icons.download),
+										label: const Text('Start Download'),
+										onPressed:
+												(!_hasInternet || _downloading) ? null : _startDownload,
+									),
 								),
 							),
 						],

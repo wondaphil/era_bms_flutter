@@ -1,54 +1,57 @@
-// lib/core/api/bms_api_culvert_inspection.dart
-
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'api_config.dart';
 
-/// Assumes a global API_URL like:
-/// const API_URL = 'http://example.com/';
 class BmsApiCulvertInspection {
-  final String baseUrl;
+	Future<List<Map<String, dynamic>>> _getList(String endpoint) async {
+    final baseUrl = await ApiConfig.getBaseUrl();
 
-  BmsApiCulvertInspection(this.baseUrl);
-
-  // ------------------------
-  // Internal helper
-  // ------------------------
-  Future<List<dynamic>> _postList(String endpoint) async {
-    final url = Uri.parse('$baseUrl/api/BmsAPICulvertInspection/$endpoint');
-    final response = await http.post(url);
-
-    if (response.statusCode != 200) {
-      throw Exception('Failed to load $endpoint');
+    if (baseUrl.isEmpty) {
+      throw Exception('API URL not configured');
     }
 
-    return jsonDecode(response.body) as List<dynamic>;
-  }
+    final uri = Uri.parse('$baseUrl/api/BmsAPICulvertInspection/$endpoint');
 
+    final response = await http.post(uri); // POST (as you confirmed)
+
+    if (response.statusCode != 200) {
+      throw Exception('API error [$endpoint]: ${response.statusCode}');
+    }
+
+    final decoded = jsonDecode(response.body);
+
+    if (decoded is! List) {
+      throw Exception('Unexpected response format from $endpoint');
+    }
+
+    return decoded.cast<Map<String, dynamic>>();
+  }
+	
   // ------------------------------------------------
   // Culvert Inspection APIs (parameter-less only)
   // ------------------------------------------------
 
-  Future<List<dynamic>> getCulvertImprovementList() =>
-      _postList('GetCulvertImprovementList');
+  Future<List<Map<String, dynamic>>> getCulvertImprovementList() =>
+      _getList('GetCulvertImprovementList');
 
-  Future<List<dynamic>> getCulHydrDamageTypeList() =>
-      _postList('GetculHydrDamageTypeList');
+  Future<List<Map<String, dynamic>>> getculHydrDamageTypeList() =>
+      _getList('GetculHydrDamageTypeList');
 
-  Future<List<dynamic>> getCulDamageRateAndCostList() =>
-      _postList('GetculDamageRateAndCostList');
+  Future<List<Map<String, dynamic>>> getculDamageRateAndCostList() =>
+      _getList('GetculDamageRateAndCostList');
 
-  Future<List<dynamic>> getCulStructureItemList() =>
-      _postList('GetculStructureItemList');
+  Future<List<Map<String, dynamic>>> getculStructureItemList() =>
+      _getList('GetculStructureItemList');
 
-  Future<List<dynamic>> getCulDamageInspStructureList() =>
-      _postList('GetculDamageInspStructureList');
+  Future<List<Map<String, dynamic>>> getculDamageInspStructureList() =>
+      _getList('GetculDamageInspStructureList');
 
-  Future<List<dynamic>> getCulDamageInspHydraulicList() =>
-      _postList('GetculDamageInspHydraulicList');
+  Future<List<Map<String, dynamic>>> getculDamageInspHydraulicList() =>
+      _getList('GetculDamageInspHydraulicList');
 
-  Future<List<dynamic>> getObservationAndRecommendationList() =>
-      _postList('GetObservationAndRecommendationList');
+  Future<List<Map<String, dynamic>>> getObservationAndRecommendationList() =>
+      _getList('GetObservationAndRecommendationList');
 
-  Future<List<dynamic>> getResultInspCulvertList() =>
-      _postList('GetResultInspCulvertList');
+  Future<List<Map<String, dynamic>>> getResultInspCulvertList() =>
+      _getList('GetResultInspCulvertList');
 }
