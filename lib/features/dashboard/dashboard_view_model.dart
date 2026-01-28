@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/foundation.dart';
 
 final dashboardViewModelProvider =
     Provider<DashboardViewModel>((ref) {
@@ -24,7 +25,10 @@ class DashboardViewModel {
       case 'help':
         break;
       case 'about':
+				onAboutSelected?.call();
         break;
     }
   }
+	
+	VoidCallback? onAboutSelected;
 }

@@ -25,6 +25,7 @@ import '../../features/maps/culvert_map_by_segment_page.dart';
 import '../../features/settings/settings_page.dart';
 import '../../features/settings/download_data_page.dart';
 import '../../features/settings/view_all_tables_page.dart';
+import '../../features/help/about_page.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/',
@@ -181,6 +182,11 @@ final appRouter = GoRouter(
 		GoRoute(
 			path: '/settings/download',
 			builder: (_, __) => const DownloadDataPage(),
+		),
+		
+		GoRoute(
+			path: '/about',
+			builder: (context, state) => const AboutPage(),
 		),
   ],
 );

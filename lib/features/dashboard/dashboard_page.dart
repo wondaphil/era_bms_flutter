@@ -25,7 +25,11 @@ class DashboardPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final vm = ref.watch(dashboardViewModelProvider);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    vm.onAboutSelected = () {
+			context.push('/about');
+		};
+
+		final isDark = Theme.of(context).brightness == Brightness.dark;
     final borderColor = Theme.of(context).colorScheme.primary;
     final imageSize = _imageSize(context);
 
