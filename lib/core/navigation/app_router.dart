@@ -22,6 +22,7 @@ import '../../features/maps/bridge_map_page.dart';
 import '../../features/maps/bridge_map_by_segment_page.dart';
 import '../../features/maps/culvert_map_page.dart';
 import '../../features/maps/culvert_map_by_segment_page.dart';
+import '../../features/tracking/active_users_map_page.dart';
 import '../../features/settings/settings_page.dart';
 import '../../features/settings/download_data_page.dart';
 import '../../features/settings/view_all_tables_page.dart';
@@ -177,6 +178,11 @@ final appRouter = GoRouter(
 		GoRoute(
 			path: '/settings/tables',
 			builder: (context, state) => const ViewAllTablesPage(),
+		),
+		
+		GoRoute(
+			path: '/settings/activeusers',
+			builder: (context, state) => const ActiveUsersMapPage(),
 		),
 		
 		GoRoute(

@@ -5,6 +5,7 @@ import 'package:path/path.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../core/navigation/app_drawer.dart';
 import '../../core/database/database_info_repository.dart';
+import '../tracking/active_users_map_page.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -194,6 +195,16 @@ class _SettingsPageState extends State<SettingsPage> {
               context.push('/settings/tables');
             },
           ),
+
+          _quickCard(
+						context,
+						icon: Icons.location_on,
+						title: 'Active Users',
+						subtitle: 'View all active users',
+            onTap: () {
+							context.push('/settings/activeusers');
+						},
+					),
         ],
       ),
     );

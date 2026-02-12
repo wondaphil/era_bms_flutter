@@ -53,6 +53,7 @@ dependencies:
   connectivity_plus: ^6.0.3
   shared_preferences: ^2.2.2
   package_info_plus: ^9.0.0
+  device_info_plus: ^10.1.0
 
 dev_dependencies:
   flutter_test:
