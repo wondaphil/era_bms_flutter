@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import '../../features/dashboard/dashboard_page.dart';
+import '../../core/navigation/main_shell_page.dart';
 import '../../features/bridges/bridges_page.dart';
 import '../../features/culverts/culverts_page.dart';
 import '../../features/bridges/bridges_by_location_page.dart';
@@ -15,9 +16,8 @@ import '../../features/culverts/culvert_new_page.dart';
 import '../../features/reports/reports_page.dart';
 import '../../features/reports/inventory_reports_page.dart';
 import '../../features/reports/inspection_reports_page.dart';
-import '../../features/charts/charts_page.dart';
-import '../../features/charts/inventory_charts_page.dart';
-import '../../features/charts/inspection_charts_page.dart';
+import '../../features/reports/inventory_charts_page.dart';
+import '../../features/reports/inspection_charts_page.dart';
 import '../../features/maps/bridge_map_page.dart';
 import '../../features/maps/bridge_map_by_segment_page.dart';
 import '../../features/maps/culvert_map_page.dart';
@@ -33,7 +33,8 @@ final appRouter = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) => const DashboardPage(),
+      //builder: (context, state) => const DashboardPage(),
+			builder: (context, state) => const MainShellPage(),
     ),
 
     GoRoute(
@@ -114,27 +115,22 @@ final appRouter = GoRouter(
 		),
 		
 		GoRoute(
-			path: '/reports/inventory',
+			path: '/reports/inventoryreports',
 			builder: (context, state) => const InventoryReportsPage(),
 		),
 		
 		GoRoute(
-			path: '/reports/inspection',
+			path: '/reports/inspectionreports',
 			builder: (context, state) => const InspectionReportsPage(),
 		),
 		
 		GoRoute(
-			path: '/charts',
-			builder: (context, state) => const ChartsPage(),
-		),
-
-		GoRoute(
-			path: '/charts/inventory',
+			path: '/reports/inventorycharts',
 			builder: (context, state) => const InventoryChartsPage(),
 		),
 
 		GoRoute(
-			path: '/charts/inspection',
+			path: '/reports/inspectioncharts',
 			builder: (context, state) => const InspectionChartsPage(),
 		),
 		

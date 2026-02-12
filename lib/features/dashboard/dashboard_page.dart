@@ -105,22 +105,6 @@ class DashboardPage extends ConsumerWidget {
 
             const SizedBox(height: 20),
 
-            const Text(
-              'የኢትዮጵያ መንገዶች አስተዳደር',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontFamily: 'Nyala', fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-
-            const SizedBox(height: 6),
-
-            const Text(
-              'Ethiopian Roads Administration',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-
-            const SizedBox(height: 16),
-
             Image.asset(
               isDark
                   ? 'assets/images/logos/bms_icon_light.png'
@@ -156,23 +140,6 @@ class DashboardPage extends ConsumerWidget {
             ),
 
             const SizedBox(height: 30),
-						
-						Padding(
-							padding: const EdgeInsets.symmetric(vertical: 8),
-							child: GridView.count(
-								crossAxisCount: MediaQuery.of(context).size.width > 600 ? 4 : 2,
-								shrinkWrap: true,
-								physics: const NeverScrollableScrollPhysics(),
-								mainAxisSpacing: 12,
-								crossAxisSpacing: 12,
-								children: [
-									_quickCard(context, AppSvgIcon(asset: 'assets/icons/bridge.svg'), 'Bridges', '/bridges'),
-									_quickCard(context, AppSvgIcon(asset: 'assets/icons/culvert.svg'), 'Culverts', '/culverts'),
-									_quickCard(context, Icon(Icons.description), 'Reports', '/reports'),
-									_quickCard(context, Icon(Icons.bar_chart), 'Charts', '/charts'),
-								],
-							),
-						),
           ],
         ),
       ),

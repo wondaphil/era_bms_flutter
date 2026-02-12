@@ -32,20 +32,15 @@ class AppDrawer extends StatelessWidget {
           _item(context, const Icon(Icons.home), 'Home', '/'),
 					
 					const Divider(),
-					_item(context, AppSvgIcon(asset: 'assets/icons/bridge.svg'), 'Bridges', '/bridges'),
-          _item(context, Icon(Icons.fact_check), 'Bridge Inventory/Inspection', '/bridge-inspection'),
-          
-          const Divider(),
-					_item(context, AppSvgIcon(asset: 'assets/icons/culvert.svg'), 'Culverts', '/culverts'),
-					_item(context, Icon(Icons.fact_check_outlined), 'Culvert Inventory/Inspection', '/culvert-inspection'),
+					_item(context, Icon(Icons.fact_check), 'Bridge Inventory/Inspection', '/bridge-inspection'),
+          _item(context, Icon(Icons.fact_check_outlined), 'Culvert Inventory/Inspection', '/culvert-inspection'),
 
           const Divider(),
-					_item(context, Icon(Icons.description), 'Reports', '/reports'),
-          _item(context, Icon(Icons.bar_chart), 'Charts', '/charts'),
-          
-          const Divider(),
 					_item(context, Icon(Icons.route), 'Location/Route', '/location'),
-          _item(context, Icon(Icons.settings), 'Settings', '/settings'),
+          
+					_item(context, Icon(Icons.settings), 'Settings', '/settings'),
+					const Divider(),
+					
         ],
       ),
     );
@@ -89,9 +84,9 @@ class AppDrawer extends StatelessWidget {
 			onTap: () {
 				Navigator.pop(context);
 				if (!isSelected) {
-					context.go(route);
+					context.push(route);
 				}
 			},
 		);
-}
+	}
 }
