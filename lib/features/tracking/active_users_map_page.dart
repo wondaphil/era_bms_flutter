@@ -18,12 +18,16 @@ class ActiveUsersMapPage extends StatefulWidget {
 class _ActiveUsersMapPageState extends State<ActiveUsersMapPage> {
   final UserTrackingService _trackingService = UserTrackingService();
 
-  GoogleMapController? _mapController;
+  GoogleMapController? _controller;
   Timer? _pollingTimer;
 
   Set<Marker> _markers = {};
+	GoogleMapController? _mapController;
   String? _myDeviceId;
-  bool _firstCameraMove = true;
+
+  bool _loading = true;
+
+  static const LatLng _defaultCenter = LatLng(9.03, 38.74);
 
   @override
   void initState() {
@@ -36,13 +40,11 @@ class _ActiveUsersMapPageState extends State<ActiveUsersMapPage> {
 
     await _trackingService.start();
 
-    // initial load
     await _loadActiveUsers();
 
-    // poll every 5 sec
     _pollingTimer =
-        Timer.periodic(const Duration(seconds: 5), (_) async {
-      await _loadActiveUsers();
+        Timer.periodic(const Duration(seconds: 5), (_) {
+      _loadActiveUsers();
     });
   }
 
@@ -54,80 +56,118 @@ class _ActiveUsersMapPageState extends State<ActiveUsersMapPage> {
   }
 
   Future<void> _loadActiveUsers() async {
-    final baseUrl = await ApiConfig.getBaseUrl();
-    final url = Uri.parse('${baseUrl}api/BmsAPI/GetActiveUsers');
+		try {
+			final baseUrl = await ApiConfig.getBaseUrl();
+			final url = Uri.parse('${baseUrl}/api/BmsAPI/GetActiveUsers');
 
-    try {
-      final response = await http.get(url);
+			final response = await http.get(url);
 
-      if (response.statusCode != 200) return;
+			if (response.statusCode != 200) {
+				print("API error: ${response.statusCode}");
+				return;
+			}
 
-      final List<dynamic> data = jsonDecode(response.body);
+			final List<dynamic> data = jsonDecode(response.body);
 
-      final Set<Marker> updatedMarkers = {};
+			if (data.isEmpty) {
+				print("No active users returned.");
+				setState(() {
+					_markers.clear();
+					_loading = false;
+				});
+				return;
+			}
 
-      for (final user in data) {
-        final deviceId = user['DeviceId'];
-        final userName = user['UserName'] ?? deviceId;
-        final lat = (user['Latitude'] as num).toDouble();
-        final lng = (user['Longitude'] as num).toDouble();
-        final lastSeen = user['LastSeen'];
+			final Set<Marker> newMarkers = {};
+			LatLng? firstPosition;
 
-        final isMe = deviceId == _myDeviceId;
+			for (final user in data) {
+				final double lat = (user['Latitude'] as num).toDouble();
+				final double lng = (user['Longitude'] as num).toDouble();
 
-        updatedMarkers.add(
-          Marker(
-            markerId: MarkerId(deviceId),
-            position: LatLng(lat, lng),
-            icon: BitmapDescriptor.defaultMarkerWithHue(
-              isMe
-                  ? BitmapDescriptor.hueBlue
-                  : BitmapDescriptor.hueOrange,
-            ),
-            infoWindow: InfoWindow(
-              title: userName,
-              snippet: 'Last seen: $lastSeen',
-            ),
-          ),
-        );
+				final deviceId = user['DeviceId'];
+				final isMe = deviceId == _myDeviceId;
 
-        // Move camera only first time
-        if (_firstCameraMove && _mapController != null) {
-          _mapController!.animateCamera(
-            CameraUpdate.newLatLngZoom(
-              LatLng(lat, lng),
-              14,
-            ),
-          );
-          _firstCameraMove = false;
-        }
-      }
+				final position = LatLng(lat, lng);
 
-      if (!mounted) return;
+				firstPosition ??= position; // Save first marker for camera
 
-      setState(() {
-        _markers = updatedMarkers;
-      });
-    } catch (_) {
-      // silently ignore errors
+				newMarkers.add(
+					Marker(
+						markerId: MarkerId(deviceId),
+						position: position,
+						icon: BitmapDescriptor.defaultMarkerWithHue(
+							isMe
+									? BitmapDescriptor.hueBlue
+									: BitmapDescriptor.hueOrange,
+						),
+						infoWindow: InfoWindow(
+							title: user['UserName'] ?? deviceId,
+						),
+					),
+				);
+			}
+
+			setState(() {
+				_markers
+					..clear()
+					..addAll(newMarkers);
+
+				_loading = false;
+			});
+
+			// 🔥 Move camera only once (when first loaded)
+			if (_mapController != null && firstPosition != null) {
+				_mapController!.animateCamera(
+					CameraUpdate.newLatLngZoom(firstPosition, 15),
+				);
+			}
+
+		} catch (e) {
+			print("ERROR: $e");
+
+			setState(() {
+				_loading = false;
+			});
+		}
+	}
+
+  LatLngBounds _calculateBounds(List<LatLng> positions) {
+    double minLat = positions.first.latitude;
+    double maxLat = positions.first.latitude;
+    double minLng = positions.first.longitude;
+    double maxLng = positions.first.longitude;
+
+    for (final p in positions) {
+      if (p.latitude < minLat) minLat = p.latitude;
+      if (p.latitude > maxLat) maxLat = p.latitude;
+      if (p.longitude < minLng) minLng = p.longitude;
+      if (p.longitude > maxLng) maxLng = p.longitude;
     }
+
+    return LatLngBounds(
+      southwest: LatLng(minLat, minLng),
+      northeast: LatLng(maxLat, maxLng),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Active Users')),
-      body: GoogleMap(
-        myLocationEnabled: true,
-        markers: _markers,
-        initialCameraPosition: const CameraPosition(
-          target: LatLng(9.0, 38.7),
-          zoom: 6,
-        ),
-        onMapCreated: (controller) {
-          _mapController = controller;
-        },
-      ),
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : GoogleMap(
+              myLocationEnabled: true,
+              initialCameraPosition: const CameraPosition(
+                target: _defaultCenter,
+                zoom: 6,
+              ),
+              markers: _markers,
+              onMapCreated: (controller) {
+                _controller = controller;
+              },
+            ),
     );
   }
 }

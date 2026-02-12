@@ -1,12 +1,11 @@
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uuid/uuid.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'dart:io';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:uuid/uuid.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DeviceIdentity {
-  static const _deviceIdKey = 'device_id';
+  static const _deviceIdKey = 'device_uuid';
 
-  /// Get persistent UUID
   static Future<String> getDeviceId() async {
     final prefs = await SharedPreferences.getInstance();
 
@@ -20,18 +19,17 @@ class DeviceIdentity {
     return id;
   }
 
-  /// Get device model name
-  static Future<String> getUserName() async {
+  static Future<String> getDeviceName() async {
     final deviceInfo = DeviceInfoPlugin();
 
     if (Platform.isAndroid) {
-      final android = await deviceInfo.androidInfo;
-      return android.model ?? 'Android Device';
+      final androidInfo = await deviceInfo.androidInfo;
+      return androidInfo.model ?? 'Android Device';
     }
 
     if (Platform.isIOS) {
-      final ios = await deviceInfo.iosInfo;
-      return ios.name ?? 'iOS Device';
+      final iosInfo = await deviceInfo.iosInfo;
+      return iosInfo.name ?? 'iOS Device';
     }
 
     return 'Unknown Device';
